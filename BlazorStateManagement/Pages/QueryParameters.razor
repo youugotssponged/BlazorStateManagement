@@ -1,0 +1,36 @@
+﻿@page "/query-parameters"
+
+<h3>Query Parameters</h3>
+
+@if(Filter != null)
+{
+    <h3>FilterActual is: @FilterActual</h3>
+}
+
+@code {
+    [Parameter] 
+    public bool? ShowWithPopUp { get; set; }
+
+    [Parameter]
+    public int? Score { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? Filter { get; set; } // Enum's not supported with [SupplyParameterFromQuery]
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "star")]
+    public string[]? Stars { get; set; }
+
+    private FilterTypes FilterActual = FilterTypes.DEFAULT;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Enum's not directly supported with [SupplyParameterFromQuery]
+        // So we'll have to handle it ourselves.
+        if (Filter != null && Enum.IsDefined(typeof(FilterTypes), Filter))
+            FilterActual = (FilterTypes)Filter;
+
+        await base.OnInitializedAsync();
+    }
+}
