@@ -1,0 +1,13 @@
+﻿@using BlazorStateManagement.Core;
+
+<h1>
+    Hi @Name you are currently filtering by @FilterBy
+</h1>
+
+@code {
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public FilterTypes FilterBy { get; set; }
+}

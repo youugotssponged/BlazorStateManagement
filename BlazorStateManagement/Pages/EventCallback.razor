@@ -1,7 +1,26 @@
 ﻿@page "/event-callback"
+@using BlazorStateManagement.Core;
+@using BlazorStateManagement.Components;
 
-<h3>Event Callback</h3>
+
+<div style="border: 2px solid black">
+    <div style="margin: 20px">
+        <h5 style="text-align:center">Parent Component</h5>
+
+        <br/>
+        <h5 style="text-align:center">Parent's Filter state is: @FilterBy</h5>
+        <br/>
+
+        <FilterButtonSet FilterCallback="HandleFilterMessage" />
+    </div>
+</div>
 
 @code {
+    private FilterTypes? FilterBy;
 
+    public async Task HandleFilterMessage(FilterTypes filterRecieved)
+    {
+        FilterBy = filterRecieved;
+        await InvokeAsync(StateHasChanged);
+    }
 }

@@ -1,7 +1,43 @@
 ﻿@page "/component-parameters"
 
+@using BlazorStateManagement.Core;
+@using BlazorStateManagement.Components;
+@inject AppStateContainer StateContainer;
+
 <h3>Component Parameters</h3>
 
-@code {
+<div>
+    <br />
+    <div style="border: 2px solid black">
+        <div style="margin: 20px;">
+            <h4>Child component</h4>
+            <BasicComponent Name="@MyName" FilterBy="@MyFilter" />
+        </div>
+    </div>
+    <br />
 
+    <Button Color="Color.Success" Clicked="ChangeValues">Change Parameter Values</Button>
+
+</div>
+@code {
+    private string? MyName;
+    private FilterTypes MyFilter;
+
+    private string[] NameOptions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        MyName = "Jordan";
+        MyFilter = FilterTypes.LOWEST_TO_HIGHEST;
+
+        NameOptions = StateContainer.NameOptions;
+        await base.OnInitializedAsync();
+    }
+
+    private void ChangeValues()
+    {
+        var rand = new Random();
+        MyName = NameOptions[rand.Next(0, NameOptions.Length)];
+        MyFilter = (FilterTypes)rand.Next(0, Enum.GetValues<FilterTypes>().Length);
+    }
 }

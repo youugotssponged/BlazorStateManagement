@@ -1,4 +1,4 @@
-﻿namespace BlazorStateManagement.Shared
+﻿namespace BlazorStateManagement.Core
 {
     public enum FilterTypes
     {

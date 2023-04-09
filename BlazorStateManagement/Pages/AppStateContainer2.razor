@@ -1,7 +1,77 @@
 ﻿@page "/app-state-container-2"
 
-<h3>App State Container 2</h3>
+@using BlazorStateManagement.Core;
+
+@implements IDisposable;
+@inject AppStateContainer StateContainer;
+
+<div style="margin-top: 50px">
+    <EditForm Model="@FormModel" OnSubmit="@HandleSubmit">
+        <p>
+            <label>Title: </label>
+            <InputText id="title" @bind-Value="FormModel.Title" />
+        </p>
+        <p>
+            <label>First name: </label>
+            <InputText id="name" @bind-Value="FormModel.Name" />
+        </p>
+        <p>
+            <label>Description: </label>
+            <InputText id="desc" @bind-Value="FormModel.Description" />
+        </p>
+
+        <p>
+            <label>Age: </label>
+            <input type="text">
+        </p>
+
+        <p>
+            <label>Hometown: </label>
+            <input type="text">
+        </p>
+
+        <p>
+            <label>Marrital Status: </label>
+            <input type="text">
+        </p>
+
+        <p>
+            <label>Would you like fries with this?: </label>
+            <input type="checkbox">
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </EditForm>
+</div>
+
 
 @code {
+    private Person FormModel;
 
+    protected override void OnInitialized()
+    {
+        StateContainer.OnShowAuthorChanged += HandleAuthorChanged;
+        StateContainer.OnUserDataChanged += HandleUserDataChanged;
+
+        FormModel = StateContainer.User;
+    }
+
+    // Handler's for this demo aren't doing anything specific except forcing a re-render
+    private void HandleAuthorChanged() => StateHasChanged();
+    private void HandleUserDataChanged() => StateHasChanged();
+
+    private void HandleSwitchClick() => StateContainer.ShowAuthorName = !StateContainer.ShowAuthorName;
+    
+    private void HandleSubmit()
+    {
+        // Magical call to API 
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnShowAuthorChanged -= HandleAuthorChanged;
+        StateContainer.OnUserDataChanged -= HandleUserDataChanged;
+    }
 }

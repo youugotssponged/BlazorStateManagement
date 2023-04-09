@@ -1,7 +1,38 @@
-﻿@page "/data-binding"
+﻿@page "/data-binding-one-way"
 
-<h3>Data Binding</h3>
+<h3>Data Binding - one-way binding example</h3>
+
+<h1>@Title</h1>
+
+Here's a list of colours.
+
+<ul>
+    @foreach (var colour in Colours)
+    {
+        <li style="color: @colour;">@colour</li>
+    }
+</ul>
+
+@if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+{
+    <p class="@weekendFontStyle">It's the weekend!</p>
+}
+else
+{
+    <p style="font-family: @weekDayFontStyle; font-size: 50px">It's @DateTime.Now.DayOfWeek.ToString()</p>
+}
+
+
 
 @code {
 
+    private string Title { get; set; } = "Welcome to one-way binding";
+
+    private List<string> Colours { get; set; } = new()
+    {
+        "Red", "Blue", "Green", "Purple"
+    };
+
+    private string weekendFontStyle { get; set; } = "party-time";
+    private string weekDayFontStyle { get; set; } = "Courier New";
 }

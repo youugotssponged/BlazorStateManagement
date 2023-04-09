@@ -1,7 +1,65 @@
 ﻿@page "/app-state-container-1"
 
-<h3>App State Container 1</h3>
+@using BlazorStateManagement.Core;
+
+@implements IDisposable;
+@inject AppStateContainer StateContainer;
+
+<div>
+    <h3>StateContainer.ShowAuthorName is currently: @StateContainer.ShowAuthorName</h3>
+    <label class="switch">
+        <input type="checkbox">
+        <span class="slider round" onclick="@(() => HandleSwitchClick())"></span>
+    </label>
+</div>
+
+<div style="margin-top: 50px">
+    <h3>Dummy Form to save to the StateContext</h3>
+    <EditForm Model="@FormModel" OnSubmit="@HandleSubmit">
+        <p>
+            <label>Title: </label>
+            <InputText id="title" @bind-Value="FormModel.Title" />
+        </p>
+        <p>
+            <label>First name: </label>
+            <InputText id="name" @bind-Value="FormModel.Name" />
+        </p>
+        <p>
+            <label>Description: </label>
+            <InputText id="desc" @bind-Value="FormModel.Description" />
+        </p>
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </EditForm>
+</div>
 
 @code {
+    private Person FormModel;
 
+    protected override void OnInitialized()
+    {
+        StateContainer.OnShowAuthorChanged += HandleAuthorChanged;
+        StateContainer.OnUserDataChanged += HandleUserDataChanged;
+
+        FormModel = StateContainer.User;
+    }
+
+    // Handler's for this demo aren't doing anything specific except forcing a re-render
+    private void HandleAuthorChanged() => StateHasChanged();
+    private void HandleUserDataChanged() => StateHasChanged();
+
+    private void HandleSwitchClick() =>
+        StateContainer.ShowAuthorName = !StateContainer.ShowAuthorName;
+
+    private void HandleSubmit()
+    {
+        // Magical call to API
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnShowAuthorChanged -= HandleAuthorChanged;
+        StateContainer.OnUserDataChanged -= HandleUserDataChanged;
+    }
 }

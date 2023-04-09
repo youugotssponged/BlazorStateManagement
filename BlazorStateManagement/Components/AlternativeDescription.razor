@@ -1,0 +1,19 @@
+﻿<p>
+    <Label>Alternative Description:</Label>
+    <h2>Alternative Description is: @AltDesc</h2>
+    <button @onclick="UpdateParentsTitle">Update Parents Title</button>
+</p>
+
+@code {
+    [Parameter] 
+    public string? AltDesc { get; set; }
+
+    [Parameter] 
+    public EventCallback<string> SecondDescriptionChanged { get; set; }
+
+    private async Task UpdateParentsTitle()
+    {
+        AltDesc = "Hello, From Child Component!";
+        await SecondDescriptionChanged.InvokeAsync(AltDesc);
+    }
+}

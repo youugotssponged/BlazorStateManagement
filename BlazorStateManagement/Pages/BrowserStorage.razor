@@ -1,7 +1,60 @@
 ﻿@page "/browser-storage"
 
-<h3>Browser Storage</h3>
+@using BlazorStateManagement.Core;
+
+@inject IBrowserStorageInterop _browserStorage;
+@inject ILogger<BrowserStorage> _logger;
+
+<h3 style="margin-bottom: 50px;">Browser Storage</h3>
+
+<EditForm Model="@PersonToSave">
+    <p>
+        <label>Title: </label>
+        <InputText id="title" @bind-Value="PersonToSave.Title" />
+    </p>
+    <p>
+        <label>First name: </label>
+        <InputText id="name" @bind-Value="PersonToSave.Name" />
+    </p>
+    <p>
+        <label>Description: </label>
+        <InputText id="desc" @bind-Value="PersonToSave.Description" />
+    </p>
+</EditForm>
+
+<div>
+    <Button Color="Color.Success" Clicked="Save">Save to LocalStorage</Button>
+    <Button Color="Color.Info" Clicked="Load">Load from LocalStorage</Button>
+    <Button Color="Color.Danger" Clicked="Clear">Clear from LocalStorage</Button>
+</div>
 
 @code {
+    // localStorage.getItem("_state_management");
 
+    private Person PersonToSave = new();
+
+    public async Task Save() 
+    {
+        _logger.LogInformation("BrowserStorage: Saving...");
+        await _browserStorage.Save(PersonToSave); 
+        _logger.LogInformation("BrowserStorage: Saved!");
+    }
+
+    public async Task Clear() 
+    { 
+        _logger.LogInformation("BrowserStorage: Deleting Saved Person Data...");
+        await _browserStorage.Clear();
+        _logger.LogInformation("BrowserStorage: Deleted!");
+    }
+
+    public async Task Load() 
+    { 
+        _logger.LogInformation("BrowserStorage: Loading Saved Person Data...");
+
+        var personFromStorage = await _browserStorage.LoadPerson();
+        if (personFromStorage != null)
+            PersonToSave = personFromStorage;
+
+        _logger.LogInformation("BrowserStorage: Loaded!");
+    }
 }

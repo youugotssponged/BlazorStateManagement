@@ -1,4 +1,7 @@
 ﻿@page "/query-parameters"
+@page "/query-parameters/{ShowWithPopUp:bool}/{Score:int}"
+
+@using BlazorStateManagement.Core;
 
 <h3>Query Parameters</h3>
 
@@ -6,6 +9,32 @@
 {
     <h3>FilterActual is: @FilterActual</h3>
 }
+
+@if (Score != null)
+{
+    <h3>Score is: @Score</h3>
+}
+
+@if (Star != null)
+{
+    <h3>@Star is today's star!</h3>
+}
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Welcome Message</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            Welcome to the wise up wednesday all about Blazor State Management
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
 
 @code {
     [Parameter] 
@@ -20,8 +49,9 @@
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "star")]
-    public string[]? Stars { get; set; }
+    public string? Star { get; set; }
 
+    private Modal? modalRef;
     private FilterTypes FilterActual = FilterTypes.DEFAULT;
 
     protected override async Task OnInitializedAsync()
@@ -33,4 +63,19 @@
 
         await base.OnInitializedAsync();
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            if (ShowWithPopUp != null && ShowWithPopUp.Value && modalRef != null)
+            {
+                await modalRef.Show();
+            }
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private Task ShowModal() => modalRef.Show();
+    private Task HideModal() => modalRef.Hide();
 }

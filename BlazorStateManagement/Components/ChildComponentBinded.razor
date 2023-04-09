@@ -1,0 +1,15 @@
+﻿<h2>Parent Title is: @ParentsTitle</h2>
+
+<button @onclick="UpdateParentsTitle">Update Parents Title from Child</button>
+
+
+@code {
+    [Parameter] public string ParentsTitle { get; set; }
+    [Parameter] public EventCallback<string> ParentsTitleChanged { get; set; }
+
+    private async Task UpdateParentsTitle()
+    {
+        ParentsTitle = "Hello, From Child Component!";
+        await ParentsTitleChanged.InvokeAsync(ParentsTitle);
+    }
+}

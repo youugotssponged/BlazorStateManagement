@@ -1,7 +1,46 @@
 ﻿@page "/cascading-values"
 
+@using BlazorStateManagement.Core;
+@using BlazorStateManagement.Components;
+
 <h3>Cascading Values</h3>
 
-@code {
+<br />
 
+<Button Color="Color.Success" Clicked="HandleClick">Switch theme</Button>
+<Button Color="Color.Success" Clicked="HandleFilterClick">Switch filter</Button>
+
+<br />
+<br />
+
+<CascadingValue Value="@ThemeInfo">
+    <CascadingValue Value="@Filter">
+        <div style="border: 2px solid black">
+            <h5>Cascaded Value Wrapped</h5>
+            <ThemedComponent />
+            <NonThemedComponent />
+            <FilterComponent />
+        </div>
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    private string ThemeInfo = "Light-mode";
+    private FilterTypes Filter;
+
+    private void HandleClick()
+    {
+        if (ThemeInfo == "Light-mode")
+        {
+            ThemeInfo = "Dark-mode";
+            return;
+        }
+
+        ThemeInfo = "Light-mode";
+        return;
+    }
+
+    private void HandleFilterClick()
+        => Filter = (FilterTypes) 
+            new Random().Next(0, Enum.GetValues<FilterTypes>().Length);
 }

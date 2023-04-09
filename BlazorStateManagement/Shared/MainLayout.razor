@@ -1,15 +1,33 @@
 ﻿@inherits LayoutComponentBase
 
+@using BlazorStateManagement.Core;
+
+@implements IDisposable;
+@inject AppStateContainer StateContainer;
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
     <main>
         <div class="top-row px-4">
-            <h5>By Jordan McCann</h5>
+            @if (StateContainer.ShowAuthorName)
+            {
+                <h5>By Jordan McCann</h5>
+            }
         </div>
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+@code {
+    protected override void OnInitialized() => 
+        StateContainer.OnShowAuthorChanged += HandleAuthorNameChanged;
+
+    private void HandleAuthorNameChanged() => StateHasChanged();
+
+    public void Dispose() => 
+        StateContainer.OnShowAuthorChanged -= HandleAuthorNameChanged;
+}

@@ -1,0 +1,38 @@
+﻿@using BlazorStateManagement.Core;
+
+<div style="border: 2px solid black;">
+    <div style="margin: 20px">
+        <h5 style="text-align:center">Child component</h5>
+        <h5 style="text-align:center">
+            Filter by:
+            @foreach (FilterTypes val in Enum.GetValues(typeof(FilterTypes)))
+            {
+                <Button Color="colors[colorIdx++]" Clicked="@(async() => await SendMessageToParent(val))">
+                    @Enum.GetName(typeof(FilterTypes), val)
+                </Button>
+                <i style="padding: 2px;"></i>
+            }
+        </h5>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public EventCallback<FilterTypes> FilterCallback { get; set; }
+
+    #region Button Colour Re-render HACK to keep demo short
+    private Color[] colors = new Color[] { Color.Primary, Color.Secondary, Color.Info, Color.Warning, Color.Danger };
+    private int colorIdx = 0;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        colorIdx = 0;
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    #endregion
+
+    // Handlers
+    private async Task SendMessageToParent(FilterTypes filter)
+    {
+        await FilterCallback.InvokeAsync(filter);
+    }
+}
